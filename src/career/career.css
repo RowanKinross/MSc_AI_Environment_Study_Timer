@@ -4,10 +4,9 @@
   overflow-wrap: break-word;
 }
 
-.career-input {
-  width: 95%;
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+.career-done-tick {
+  color: green;
+  font-size: 1.5em;
+  margin-left: 0.35em;
 }
+

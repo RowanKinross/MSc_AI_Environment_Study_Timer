@@ -1,11 +1,12 @@
 import './style.css'
 import { useState } from 'react'
 import Career from './career/career.jsx'
-import Health from './health/health.jsx'
 import PaperRead from './paper_read/paper_read.jsx'
 import Relax from './relax/relax.jsx'
 import StudyTimer from './study_timer/study_timer.jsx'
 import Todo from './todo/todo.jsx'
+import Journal from './journal/journal.jsx'
+
 import { formatWeekLabel, getStartOfWeek, shiftWeek } from './week.js'
 
 function App() {
@@ -47,11 +48,11 @@ function App() {
 
         <div className="sections">
           <Career />
-          <Health />
           <PaperRead />
           <Relax />
           <StudyTimer />
           <Todo />
+          <Journal />
         </div>
       </div>
     </main>
