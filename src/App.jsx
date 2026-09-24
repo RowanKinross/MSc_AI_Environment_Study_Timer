@@ -47,12 +47,12 @@ function App() {
         </div>
 
         <div className="sections">
-          <Career />
+          {/* <Career />
           <PaperRead />
-          <Relax />
-          <StudyTimer />
-          <Todo />
-          <Journal />
+          <Relax /> */}
+          <StudyTimer weekStart={weekStart} />
+          <Todo weekStart={weekStart} />
+          {/* <Journal /> */}
         </div>
       </div>
     </main>

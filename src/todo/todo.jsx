@@ -1,12 +1,40 @@
 import { useState } from 'react'
 import './todo.css'
 
-function Todo() {
-  const [items, setItems] = useState([
-    { id: 1, text: 'Review lecture notes', done: false },
-    { id: 2, text: 'Submit assignment draft', done: false }
-  ])
+const TODO_KEY = 'todo.weeklyItems'
+
+const DEFAULT_ITEMS = [
+]
+
+function getWeekKey(weekStart) {
+  return weekStart.toISOString().slice(0, 10)
+}
+
+function loadWeeklyItems() {
+  try {
+    return JSON.parse(localStorage.getItem(TODO_KEY)) ?? {}
+  } catch {
+    return {}
+  }
+}
+
+function Todo({ weekStart }) {
+  const weekKey = getWeekKey(weekStart)
+
+  const [weeklyItems, setWeeklyItems] = useState(loadWeeklyItems)
   const [newItem, setNewItem] = useState('')
+
+  const items = weeklyItems[weekKey] ?? DEFAULT_ITEMS
+
+  const persistItems = (updater) => {
+    setWeeklyItems((currentWeeklyItems) => {
+      const currentItems = currentWeeklyItems[weekKey] ?? DEFAULT_ITEMS
+      const nextItems = updater(currentItems)
+      const nextWeeklyItems = { ...currentWeeklyItems, [weekKey]: nextItems }
+      localStorage.setItem(TODO_KEY, JSON.stringify(nextWeeklyItems))
+      return nextWeeklyItems
+    })
+  }
 
   const handleAddItem = (event) => {
     event.preventDefault()
@@ -14,7 +42,7 @@ function Todo() {
     const trimmed = newItem.trim()
     if (!trimmed) return
 
-    setItems((currentItems) => [
+    persistItems((currentItems) => [
       ...currentItems,
       { id: Date.now(), text: trimmed, done: false }
     ])
@@ -22,7 +50,7 @@ function Todo() {
   }
 
   const toggleItem = (id) => {
-    setItems((currentItems) =>
+    persistItems((currentItems) =>
       currentItems.map((item) =>
         item.id === id ? { ...item, done: !item.done } : item
       )
