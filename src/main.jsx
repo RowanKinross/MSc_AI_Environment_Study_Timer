@@ -1,20 +1,9 @@
-import { createRoot } from 'react-dom/client'
-import './style.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
 
-export default function StudyTimer() {
-
-  return (
-    <main className="shell">
-      <header>
-        <h1>
-          MSc AI for Environment Study Organiser
-        </h1>
-      </header>
-      <body>
-        
-      </body>
-    </main>
-  )
-}
-
-createRoot(document.querySelector('#app')).render(<StudyTimer />)
+ReactDOM.createRoot(document.getElementById('app')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
