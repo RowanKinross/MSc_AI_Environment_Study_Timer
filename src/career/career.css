@@ -1,0 +1,13 @@
+.career-question {
+  text-wrap: wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.career-input {
+  width: 95%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}

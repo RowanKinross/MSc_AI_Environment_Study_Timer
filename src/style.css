@@ -82,6 +82,7 @@ h2 {
 
 section {
   min-width: 300px;
+  max-width: 400px;
   min-height: 150px;
   background: var(--lighter);
   padding: 1rem;
