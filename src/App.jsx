@@ -111,7 +111,7 @@ function App() {
             onClick={() => handleWeekChange(-1)}
             aria-label="View previous week"
           >
-            ← Previous week
+            ← 
           </button>
 
           <h3>Week commencing: {formatWeekLabel(weekStart)}</h3>
@@ -122,7 +122,7 @@ function App() {
             onClick={() => handleWeekChange(1)}
             aria-label="View next week"
           >
-            Next week →
+             →
           </button>
         </div>
 
