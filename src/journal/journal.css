@@ -1,13 +1,70 @@
-.career-question {
-  text-wrap: wrap;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+.journal-section {
+  display: grid;
+  gap: 0.75rem;
 }
 
-.career-input {
-  width: 95%;
+.journal-date,
+.journal-error {
+  margin: 0;
+}
+
+.journal-date {
+  color: rgba(24, 52, 45, 0.75);
+  font-weight: 600;
+}
+
+.journal-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.journal-input {
+  box-sizing: border-box;
+  width: 100%;
   padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+  border: 1px solid rgba(24, 52, 45, 0.45);
+  border-radius: 4px;
+  font: inherit;
+  resize: vertical;
+}
+
+.journal-save-button {
+  justify-self: start;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--dark);
+  color: var(--lighter);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.journal-save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.journal-error {
+  color: #9a2716;
+}
+
+.journal-history {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.journal-history h3,
+.journal-entry h4,
+.journal-entry p {
+  margin: 0;
+}
+
+.journal-entry {
+  display: grid;
+  gap: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(24, 52, 45, 0.15);
+  overflow-wrap: anywhere;
 }
