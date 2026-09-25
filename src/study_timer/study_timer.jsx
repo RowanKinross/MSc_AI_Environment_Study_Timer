@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { getDoc, setDoc } from 'firebase/firestore'
 import './study_timer.css'
+import { backupDocument } from '../firebase.js'
 
 const CLASSES = [
   { id: 'python', name: 'Programming with Python' },
@@ -8,27 +10,8 @@ const CLASSES = [
   { id: 'ai-environment', name: 'AI in Environment' }
 ]
 
-const TOTALS_KEY = 'studyTimer.weeklyTotals'
-const RUNNING_KEY = 'studyTimer.running'
-
 function getWeekKey(weekStart) {
   return weekStart.toISOString().slice(0, 10)
-}
-
-function loadTotals() {
-  try {
-    return JSON.parse(localStorage.getItem(TOTALS_KEY)) ?? {}
-  } catch {
-    return {}
-  }
-}
-
-function loadRunning() {
-  try {
-    return JSON.parse(localStorage.getItem(RUNNING_KEY)) ?? {}
-  } catch {
-    return {}
-  }
 }
 
 function formatDuration(totalSeconds) {
@@ -43,9 +26,27 @@ function formatDuration(totalSeconds) {
 function StudyTimer({ weekStart }) {
   const weekKey = getWeekKey(weekStart)
 
-  const [totals, setTotals] = useState(loadTotals)
-  const [running, setRunning] = useState(loadRunning)
+  const [totals, setTotals] = useState({})
+  const [running, setRunning] = useState({})
   const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    let isCurrent = true
+
+    getDoc(backupDocument).then((snapshot) => {
+      if (!isCurrent || !snapshot.exists()) return
+
+      const backup = snapshot.data()
+      setTotals(backup.weeklyTotals ?? {})
+      setRunning(backup.running ?? {})
+    }).catch((error) => {
+      console.error('Unable to load study timer backup:', error)
+    })
+
+    return () => {
+      isCurrent = false
+    }
+  }, [])
 
   // tick every second while any class is running, to keep the display live
   useEffect(() => {
@@ -58,7 +59,9 @@ function StudyTimer({ weekStart }) {
   const handleStart = (classId) => {
     setRunning((current) => {
       const next = { ...current, [classId]: { weekKey, startedAt: Date.now() } }
-      localStorage.setItem(RUNNING_KEY, JSON.stringify(next))
+      setDoc(backupDocument, { running: next }, { merge: true }).catch((error) => {
+        console.error('Unable to save study timer backup:', error)
+      })
       return next
     })
   }
@@ -79,13 +82,17 @@ function StudyTimer({ weekStart }) {
             [classId]: (weekTotals[classId] ?? 0) + elapsedSeconds
           }
         }
-        localStorage.setItem(TOTALS_KEY, JSON.stringify(nextTotals))
+        setDoc(backupDocument, { weeklyTotals: nextTotals }, { merge: true }).catch((error) => {
+          console.error('Unable to save study timer backup:', error)
+        })
         return nextTotals
       })
 
       const nextRunning = { ...currentRunning }
       delete nextRunning[classId]
-      localStorage.setItem(RUNNING_KEY, JSON.stringify(nextRunning))
+      setDoc(backupDocument, { running: nextRunning }, { merge: true }).catch((error) => {
+        console.error('Unable to save study timer backup:', error)
+      })
       return nextRunning
     })
   }
