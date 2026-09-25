@@ -18,6 +18,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+
+
 header {
   margin: 0;
   display: flex;
@@ -160,5 +163,8 @@ section {
 @media (max-width: 600px) {
   section {
   min-width: 90%;
+  }
+  .sections {
+    padding-bottom: 300px
   }
 }
