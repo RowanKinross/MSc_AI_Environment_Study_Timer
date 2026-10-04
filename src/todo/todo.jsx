@@ -26,8 +26,11 @@ function Todo({ weekStart }) {
   const [weeklyItems, setWeeklyItems] = useState({})
   const [newItem, setNewItem] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [showAllItems, setShowAllItems] = useState(false)
 
   const items = weeklyItems[weekKey] ?? DEFAULT_ITEMS
+  const orderedItems = [...items].sort((first, second) => Number(first.done) - Number(second.done))
+  const visibleItems = showAllItems ? orderedItems : orderedItems.filter((item) => !item.done)
 
   useEffect(() => {
     let isCurrent = true
@@ -81,8 +84,8 @@ function Todo({ weekStart }) {
     if (!trimmed) return
 
     persistItems((currentItems) => [
-      ...currentItems,
-      { id: Date.now(), text: trimmed, done: false }
+      { id: Date.now(), text: trimmed, done: false },
+      ...currentItems
     ])
     setNewItem('')
   }
@@ -97,7 +100,9 @@ function Todo({ weekStart }) {
 
   return (
     <section className="todo-section">
-      <h2>To Do</h2>
+      <div className="todo-heading">
+        <h2>To Do</h2>
+      </div>
 
       <form className="todo-form" onSubmit={handleAddItem}>
         <input
@@ -112,7 +117,7 @@ function Todo({ weekStart }) {
       </form>
 
       <ul className="todo-list">
-        {items.map((item) => (
+        {visibleItems.map((item) => (
           <li key={item.id} className="todo-item">
             <label className="todo-label">
               <input
@@ -124,6 +129,14 @@ function Todo({ weekStart }) {
             </label>
           </li>
         ))}
+        <div
+          className="todo-visibility-button"
+          aria-label={showAllItems ? 'Show incomplete items only' : 'Show all items'}
+          title={showAllItems ? 'Show incomplete items only' : 'Show all items'}
+          onClick={() => setShowAllItems((current) => !current)}
+        >
+          {showAllItems ? '^' : '⌄'}
+        </div>
       </ul>
     </section>
   )
