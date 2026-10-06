@@ -25,6 +25,7 @@ function Journal() {
   const [entryText, setEntryText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [showPreviousEntries, setShowPreviousEntries] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -100,21 +101,40 @@ function Journal() {
           rows="5"
           disabled={isLoading || isSaving}
         />
-        <button type="submit" className="journal-save-button" disabled={isLoading || isSaving}>
-          {isSaving ? 'Saving...' : 'Save entry'}
+        <button
+          type="submit"
+          className="journal-save-button"
+          aria-label={isSaving ? 'Saving journal entry' : 'Save journal entry'}
+          title={isSaving ? 'Saving journal entry' : 'Save journal entry'}
+          disabled={isLoading || isSaving}
+        >
+          +
         </button>
       </form>
       {error && <p className="journal-error" role="alert">{error}</p>}
 
       {previousEntries.length > 0 && (
         <div className="journal-history">
-          <h3>Earlier entries</h3>
-          {previousEntries.map(([dateKey, entry]) => (
-            <article key={dateKey} className="journal-entry">
-              <h4>{formatEntryDate(dateKey)}</h4>
-              <p>{entry.text}</p>
-            </article>
-          ))}
+          <button
+            type="button"
+            className="journal-history-toggle"
+            aria-expanded={showPreviousEntries}
+            aria-controls="journal-previous-entries"
+            onClick={() => setShowPreviousEntries((current) => !current)}
+          >
+            Past Entries:
+            <span aria-hidden="true">{showPreviousEntries ? '⌄' : '^'}</span>
+          </button>
+          {showPreviousEntries && (
+            <div id="journal-previous-entries">
+              {previousEntries.map(([dateKey, entry]) => (
+                <article key={dateKey} className="journal-entry">
+                  <h4>{formatEntryDate(dateKey)}</h4>
+                  <p>{entry.text}</p>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </section>

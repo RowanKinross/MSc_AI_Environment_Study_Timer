@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getDoc, setDoc } from 'firebase/firestore'
 import './todo.css'
 import { backupDocument } from '../firebase.js'
+import { getStartOfWeek } from '../week.js'
 
 const TODO_KEY = 'todo.weeklyItems'
 
@@ -22,6 +23,9 @@ function loadLegacyWeeklyItems() {
 
 function Todo({ weekStart }) {
   const weekKey = getWeekKey(weekStart)
+  const currentWeekStart = getStartOfWeek()
+  const currentWeekKey = getWeekKey(currentWeekStart)
+  const isPreviousWeek = weekStart < currentWeekStart
 
   const [weeklyItems, setWeeklyItems] = useState({})
   const [newItem, setNewItem] = useState('')
@@ -29,6 +33,7 @@ function Todo({ weekStart }) {
   const [showAllItems, setShowAllItems] = useState(false)
 
   const items = weeklyItems[weekKey] ?? DEFAULT_ITEMS
+  const uncheckedItems = items.filter((item) => !item.done)
   const orderedItems = [...items].sort((first, second) => Number(first.done) - Number(second.done))
   const visibleItems = showAllItems ? orderedItems : orderedItems.filter((item) => !item.done)
 
@@ -98,10 +103,46 @@ function Todo({ weekStart }) {
     )
   }
 
+  const handleCopyUncheckedItems = () => {
+    if (uncheckedItems.length === 0) return
+
+    setWeeklyItems((currentWeeklyItems) => {
+      const currentItems = currentWeeklyItems[currentWeekKey] ?? DEFAULT_ITEMS
+      const usedIds = new Set(currentItems.map((item) => item.id))
+      let nextId = Date.now()
+      const copiedItems = uncheckedItems.map((item) => {
+        while (usedIds.has(nextId)) nextId += 1
+        const copiedItem = { ...item, id: nextId, done: false }
+        usedIds.add(nextId)
+        nextId += 1
+        return copiedItem
+      })
+      const nextWeeklyItems = {
+        ...currentWeeklyItems,
+        [currentWeekKey]: [...copiedItems, ...currentItems]
+      }
+
+      setDoc(backupDocument, { weeklyTodos: nextWeeklyItems }, { merge: true }).catch((error) => {
+        console.error('Unable to copy to do items:', error)
+      })
+      return nextWeeklyItems
+    })
+  }
+
   return (
     <section className="todo-section">
       <div className="todo-heading">
         <h2>To Do</h2>
+        {isPreviousWeek && (
+          <div
+            type="button"
+            className="todo-copy-button"
+            onClick={handleCopyUncheckedItems}
+            disabled={isLoading || uncheckedItems.length === 0}
+          >
+            Copy Over
+          </div>
+        )}
       </div>
 
       <form className="todo-form" onSubmit={handleAddItem}>
@@ -113,7 +154,7 @@ function Todo({ weekStart }) {
           className="todo-input"
           disabled={isLoading}
         />
-        <button type="submit" className="todo-add-button" disabled={isLoading}>Add</button>
+        <button type="submit" className="todo-add-button" disabled={isLoading}>+</button>
       </form>
 
       <ul className="todo-list">

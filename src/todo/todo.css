@@ -4,22 +4,48 @@
   margin-bottom: 1rem;
 }
 
+.todo-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.todo-copy-button {
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 5px;
+  border-radius: 999px;
+  background: var(--light);
+  color: var(--dark);
+  cursor: pointer;
+}
+
+.todo-copy-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .todo-input {
   flex: 1;
   min-width: 0;
   padding: 0.7rem 0.9rem;
-  border-radius: 8px;
+  border-radius: 999px;
   border: 1px solid rgba(24, 52, 45, 0.3);
   font-size: 1rem;
 }
 
 .todo-add-button {
-  padding: 0.7rem 1rem;
-  border: none;
-  border-radius: 8px;
-  background: #18342d;
-  color: #f7f0e8;
+  padding: 0.7rem 1.05rem;
+  border: solid 1px var(--dark);
+  border-radius: 999px;
+  background: var(--lighter);
+  color: var(--dark);
   cursor: pointer;
+}
+
+.todo-add-button:hover {
+  background: var(--light);
+  box-shadow: 0 0 12px rgba(239, 197, 112, 0.75);
 }
 
 .todo-list {
@@ -48,6 +74,8 @@
   opacity: 0.7;
 }
 
+
 .todo-visibility-button {
   text-align: right;
+  pointer:
 }
