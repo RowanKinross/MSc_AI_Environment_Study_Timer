@@ -13,6 +13,7 @@ import Relax from './relax/relax.jsx'
 import StudyTimer from './study_timer/study_timer.jsx'
 import Todo from './todo/todo.jsx'
 import Journal from './journal/journal.jsx'
+import Flashcards from './flashcards/flashcards.jsx'
 
 import { formatWeekLabel, getStartOfWeek, shiftWeek } from './week.js'
 import { auth } from './firebase.js'
@@ -132,6 +133,7 @@ function App() {
           <Relax /> */}
           <StudyTimer weekStart={weekStart} />
           <Todo weekStart={weekStart} />
+          <Flashcards />
           <Journal />
         </div>
       </div>
