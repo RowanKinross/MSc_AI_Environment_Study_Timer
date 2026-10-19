@@ -173,19 +173,13 @@ function Flashcards() {
       </div>
 
       <div className="flashcards-tabs">
+        Mode: 
         <button
           type="button"
-          className={`flashcards-tab ${mode === 'study' ? 'active' : ''}`}
-          onClick={() => setMode('study')}
+          className="flashcards-tab active"
+          onClick={() => setMode(mode === 'study' ? 'manage' : 'study')}
         >
-          Study
-        </button>
-        <button
-          type="button"
-          className={`flashcards-tab ${mode === 'manage' ? 'active' : ''}`}
-          onClick={() => setMode('manage')}
-        >
-          Add / manage
+          {mode === 'study' ? 'Study' : 'Add/Manage'}
         </button>
       </div>
 
@@ -242,22 +236,24 @@ function Flashcards() {
                     </em>
                   )}
                 </span>
-                <button
-                  type="button"
-                  className="flashcards-button"
-                  onClick={() => startEdit(card)}
-                  aria-label={`Edit card ${card.front}`}
-                >
-                  ✎
-                </button>
-                <button
-                  type="button"
-                  className="flashcards-button"
-                  onClick={() => handleDelete(card.id)}
-                  aria-label={`Delete card ${card.front}`}
-                >
-                  ✕
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    className="flashcards-button"
+                    onClick={() => startEdit(card)}
+                    aria-label={`Edit card ${card.front}`}
+                  >
+                    ✎
+                  </button>
+                  <button
+                    type="button"
+                    className="flashcards-button"
+                    onClick={() => handleDelete(card.id)}
+                    aria-label={`Delete card ${card.front}`}
+                  >
+                    ✕
+                  </button>
+                </div>
                 </>
                 )}
               </li>
@@ -267,16 +263,18 @@ function Flashcards() {
       ) : (
         <>
           <div className="flashcards-tabs">
-            {FILTERS.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                className={`flashcards-tab ${option.id === filter ? 'active' : ''}`}
-                onClick={() => selectFilter(option.id)}
+            <label>
+              Filter:{' '}
+              <select
+                className="flashcards-button"
+                value={filter}
+                onChange={(event) => selectFilter(event.target.value)}
               >
-                {option.label}
-              </button>
-            ))}
+                {FILTERS.map((option) => (
+                  <option key={option.id} value={option.id}>{option.label}</option>
+                ))}
+              </select>
+            </label>
           </div>
 
           {current ? (
