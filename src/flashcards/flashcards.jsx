@@ -31,6 +31,7 @@ function Flashcards() {
   const [mode, setMode] = useState('study')
   const [front, setFront] = useState('')
   const [back, setBack] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [editFront, setEditFront] = useState('')
   const [editBack, setEditBack] = useState('')
@@ -156,11 +157,19 @@ function Flashcards() {
             role="tab"
             aria-selected={deck.id === deckId}
             className={`flashcards-tab ${deck.id === deckId ? 'active' : ''}`}
-            onClick={() => selectDeck(deck.id)}
+            onClick={() => { selectDeck(deck.id); setIsOpen(true) }}
           >
             {deck.name} ({(cards[deck.id] ?? []).length})
           </button>
         ))}
+      </div>
+
+      {isOpen && (
+      <div className="flashcards-overlay" onClick={() => setIsOpen(false)}>
+      <div className="flashcards-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+      <div className="flashcards-modal-header">
+        <h3>{DECKS.find((deck) => deck.id === deckId)?.name}</h3>
+        <button type="button" className="flashcards-button" onClick={() => setIsOpen(false)} aria-label="Close">✕</button>
       </div>
 
       <div className="flashcards-tabs">
@@ -300,6 +309,9 @@ function Flashcards() {
             <p>{isLoading ? 'Loading...' : 'No cards match this filter.'}</p>
           )}
         </>
+      )}
+      </div>
+      </div>
       )}
     </section>
   )
