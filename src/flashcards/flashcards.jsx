@@ -31,6 +31,9 @@ function Flashcards() {
   const [mode, setMode] = useState('study')
   const [front, setFront] = useState('')
   const [back, setBack] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [editFront, setEditFront] = useState('')
+  const [editBack, setEditBack] = useState('')
   const [index, setIndex] = useState(0)
   const [showBack, setShowBack] = useState(false)
 
@@ -119,6 +122,23 @@ function Flashcards() {
     })
   }
 
+  const startEdit = (card) => {
+    setEditingId(card.id)
+    setEditFront(card.front)
+    setEditBack(card.back)
+  }
+
+  const saveEdit = (event) => {
+    event.preventDefault()
+    const question = editFront.trim()
+    const answer = editBack.trim()
+    if (!question || !answer) return
+    persistDeck((deck) => deck.map((card) => (
+      card.id === editingId ? { ...card, front: question, back: answer } : card
+    )))
+    setEditingId(null)
+  }
+
   const handleDelete = (id) => {
     persistDeck((deck) => deck.filter((card) => card.id !== id))
     setShowBack(false)
@@ -184,6 +204,27 @@ function Flashcards() {
           <ul className="flashcards-list">
             {deckCards.map((card) => (
               <li key={card.id} className="flashcards-list-item">
+                {editingId === card.id ? (
+                  <form className="flashcards-form" onSubmit={saveEdit}>
+                    <input
+                      type="text"
+                      className="flashcards-input"
+                      value={editFront}
+                      onChange={(event) => setEditFront(event.target.value)}
+                      aria-label="Edit question"
+                    />
+                    <input
+                      type="text"
+                      className="flashcards-input"
+                      value={editBack}
+                      onChange={(event) => setEditBack(event.target.value)}
+                      aria-label="Edit answer"
+                    />
+                    <button type="submit" className="flashcards-button">Save</button>
+                    <button type="button" className="flashcards-button" onClick={() => setEditingId(null)}>Cancel</button>
+                  </form>
+                ) : (
+                <>
                 <span>
                   {card.front} — {card.back}
                   {card.confidence && (
@@ -195,11 +236,21 @@ function Flashcards() {
                 <button
                   type="button"
                   className="flashcards-button"
+                  onClick={() => startEdit(card)}
+                  aria-label={`Edit card ${card.front}`}
+                >
+                  ✎
+                </button>
+                <button
+                  type="button"
+                  className="flashcards-button"
                   onClick={() => handleDelete(card.id)}
                   aria-label={`Delete card ${card.front}`}
                 >
                   ✕
                 </button>
+                </>
+                )}
               </li>
             ))}
           </ul>
