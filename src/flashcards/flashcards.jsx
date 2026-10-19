@@ -99,8 +99,11 @@ function Flashcards() {
   const rate = (confidence) => {
     persistDeck((deck) => deck.map((card) => (card.id === current.id ? { ...card, confidence } : card)))
     setShowBack(false)
-    // A rated card may leave the active filter, which shifts the next card into place
-    if (filter === 'all' || filter === confidence) setIndex(safeIndex + 1 >= filtered.length ? 0 : safeIndex + 1)
+    const staysInFilter = filter === 'all' || filter === confidence
+    // A card that leaves the filter shifts the next one into place, so only advance if it stays
+    const nextIndex = staysInFilter ? safeIndex + 1 : safeIndex
+    const remaining = staysInFilter ? filtered.length : filtered.length - 1
+    setIndex(nextIndex >= remaining ? 0 : nextIndex)
   }
 
   const move = (step) => {
@@ -290,7 +293,7 @@ function Flashcards() {
 
               <div className="flashcards-actions">
                 <button type="button" className="flashcards-button" onClick={() => move(-1)}>←</button>
-                {CONFIDENCE.map((level) => (
+                {showBack && CONFIDENCE.map((level) => (
                   <button
                     key={level.id}
                     type="button"
@@ -300,7 +303,6 @@ function Flashcards() {
                     {level.label}
                   </button>
                 ))}
-                <button type="button" className="flashcards-button" onClick={() => move(1)}>→</button>
               </div>
             </>
           ) : (
