@@ -240,6 +240,7 @@ function Flashcards() {
                   )}
                 </span>
                 <div>
+                  <div className="flashcards-row-actions">
                   <button
                     type="button"
                     className="flashcards-button"
@@ -256,6 +257,7 @@ function Flashcards() {
                   >
                     ✕
                   </button>
+                  </div>
                 </div>
                 </>
                 )}

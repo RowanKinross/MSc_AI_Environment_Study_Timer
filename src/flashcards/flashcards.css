@@ -34,8 +34,9 @@
 }
 
 .flashcards-input {
-  flex: 1;
-  min-width: 10rem;
+  min-width: 0;
+  flex: 1 1 10rem;
+  box-sizing: border-box;
   padding: 0.7rem 0.9rem;
   border-radius: 999px;
   border: 1px solid rgba(24, 52, 45, 0.3);
@@ -101,8 +102,16 @@
   gap: 0.75rem;
 }
 
+.flashcards-row-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
 .flashcards-badge {
-  margin-left: 0.5rem;
+  display: block;
+  width: fit-content;
+  margin-top: 0.35rem;
   padding: 0.1rem 0.5rem;
   border: solid 2px;
   border-radius: 999px;
@@ -114,8 +123,10 @@
   position: fixed;
   inset: 0;
   z-index: 100;
+  box-sizing: border-box;
+  padding: 3rem 0.5rem 3rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
 }
@@ -123,8 +134,8 @@
 .flashcards-modal {
   box-sizing: border-box;
   width: min(700px, 92vw);
-  max-height: 85vh;
-  overflow-y: auto;
+  max-height: 80%;
+  overflow: auto;
   padding: 1rem;
   border: solid 1px var(--dark);
   border-radius: 8px;
